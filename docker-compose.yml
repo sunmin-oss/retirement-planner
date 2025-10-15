@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 後端服務
+  backend:
+    build:
+      context: ./retire-planner-server
+      dockerfile: Dockerfile
+    container_name: retire-planner-backend
+    ports:
+      - "5178:5178"
+    environment:
+      - PORT=5178
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - retire-planner-net
+
+  # 前端服務（使用 nginx 提供靜態檔案）
+  frontend:
+    image: nginx:alpine
+    container_name: retire-planner-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./retire-planner:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - retire-planner-net
+
+networks:
+  retire-planner-net:
+    driver: bridge

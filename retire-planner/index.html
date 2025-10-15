@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- SEO 優化 -->
+  <title>退休計畫試算器 | 免費資產配置與財務自由計算工具</title>
+  <meta name="description" content="免費的退休計畫試算工具，支援多資產配置（0050、VT、QQQ、債券、現金）、自動查詢歷史報酬率、歷史回測與未來預測對照，幫助你規劃財務自由與 FIRE 退休計畫。" />
+  <meta name="keywords" content="退休計畫, 資產配置, FIRE, 財務自由, 退休試算, 0050, VT, ETF投資, 理財規劃, 投資組合, 退休金試算" />
+  <meta name="author" content="Retirement Planner" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.vercel.app/" />
+  <meta property="og:title" content="退休計畫試算器 | 免費資產配置工具" />
+  <meta property="og:description" content="支援多資產配置、歷史回測、自動查詢報酬率的免費退休計畫試算工具" />
+  <meta property="og:image" content="https://your-domain.vercel.app/og-image.png" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://your-domain.vercel.app/" />
+  <meta property="twitter:title" content="退休計畫試算器 | 免費資產配置工具" />
+  <meta property="twitter:description" content="支援多資產配置、歷史回測、自動查詢報酬率的免費退休計畫試算工具" />
+  <meta property="twitter:image" content="https://your-domain.vercel.app/og-image.png" />
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://your-domain.vercel.app/" />
+  
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 圖表套件（純前端 CDN） -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "退休計畫試算器",
+    "description": "免費的退休計畫試算工具，支援多資產配置、歷史回測與未來預測",
+    "url": "https://your-domain.vercel.app/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TWD"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>退休計畫試算器</h1>
+    <section class="card">
+      <h2>輸入條件</h2>
+      <form id="planner-form">
+        <div class="row">
+          <label for="allocation">資產配置（格式範例：0050:50% + VT:30% + 現金:20%）</label>
+          <input id="allocation" name="allocation" type="text" placeholder="0050:50% + VT:30% + 現金:20%" value="0050:50% + VT:30% + 現金:20%" required />
+          <small>支援代號: 百分比，使用 + 或 , 分隔；名稱可為 0050、VT、QQQ、0056、債券、現金…</small>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="target">目標金額</label>
+            <input id="target" name="target" type="number" min="0" step="1000" placeholder="10000000" value="10000000" required />
+          </div>
+          <div>
+            <label for="monthly">每月投入金額</label>
+            <input id="monthly" name="monthly" type="number" min="0" step="100" placeholder="30000" value="30000" required />
+          </div>
+        </div>
+        <div class="row two-col">
+          <div>
+            <label for="initial">第一筆投入金額（起始資金）</label>
+            <input id="initial" name="initial" type="number" min="0" step="1000" placeholder="200000" value="200000" />
+          </div>
+          <div>
+            <label for="growth">年化報酬率假設（%）</label>
+            <input id="growth" name="growth" type="number" step="0.1" placeholder="6" value="6" />
+            <small>若不同資產假設不同報酬率，可在「資產假設」設定</small>
+          </div>
+        </div>
+        <div class="row">
+          <label for="lumpsum">一次性資金事件（例如：第5年:300000; 第10年:500000）</label>
+          <input id="lumpsum" name="lumpsum" type="text" placeholder="5:300000; 10:500000" value="5:300000; 10:500000" />
+          <small>用分號 ; 分隔多筆事件。格式：「年份:金額」。年份從1起算。</small>
+        </div>
+        <details class="row">
+          <summary>資產假設（選填）：自訂各資產年化報酬率與波動</summary>
+          <div class="assumptions">
+            <p>以逗號分隔多項，例如：0050:7, VT:6, QQQ:9, 0056:5, 債券:3, 現金:1</p>
+            <label for="assetAssumptions">年化報酬率%（留空則使用上方「年化報酬率假設」統一值）</label>
+            <input id="assetAssumptions" type="text" placeholder="0050:7, VT:6, QQQ:9, 0056:5, 債券:3, 現金:1" />
+            <small style="color: #9ab; display: block; margin-top: 4px;">💡 保守型資產預設：現金 1%、債券 2.5%（可手動覆蓋）</small>
+            <div class="row actions">
+              <button type="button" id="fetchCagrBtn" class="secondary">依歷史近N年的CAGR自動帶入</button>
+              <input id="fetchYears" type="number" min="1" max="30" value="10" style="max-width:120px" />
+              <small>會呼叫本機服務 http://localhost:5178/cagr</small>
+            </div>
+            <div class="row two-col">
+              <div>
+                <label for="backendUrl">後端服務 URL</label>
+                <input id="backendUrl" type="text" value="http://localhost:5178" />
+              </div>
+              <div style="display:flex; align-items:flex-end; gap:8px;">
+                <button type="button" id="pingBackendBtn" class="secondary">測試連線</button>
+                <small id="backendStatus">尚未檢測</small>
+              </div>
+            </div>
+            <div class="row two-col">
+              <div>
+                <label for="baseYear">基準年份（用於回推顯示，預設為今年）</label>
+                <input id="baseYear" type="number" step="1" placeholder="2025" />
+              </div>
+              <div>
+                <small>結果會顯示：若自（基準年份 - X）年起投資，到基準年份的資產約為多少（X 為試算所需年數）。</small>
+              </div>
+            </div>
+          </div>
+        </details>
+        <details class="row">
+          <summary>歷史回測（選填）：逐年報酬序列</summary>
+          <div class="assumptions">
+            <p>每行一個資產，以逗號分隔年度報酬（%）。預設由舊到新。</p>
+            <textarea id="historySeries" rows="6" placeholder="0050: 8, -12, 15, 5, 10, 7, -8, 12, 3, 6&#10;VT: 10, -5, 12, 8, 6, 9, -2, 11, 4, 7"></textarea>
+            <div class="row two-col">
+              <div>
+                <label><input type="checkbox" id="historyOldToNew" checked /> 序列由舊到新</label>
+              </div>
+              <div>
+                <label for="historyEndYear">歷史序列末端年份</label>
+                <input id="historyEndYear" type="number" placeholder="2025" />
+                <small>若留空，預設為今年</small>
+              </div>
+            </div>
+            <small>若某資產未提供序列，將以其固定年化報酬率假設代替。</small>
+          </div>
+        </details>
+        <div class="row actions">
+          <button type="submit">開始試算</button>
+          <button type="button" id="resetBtn" class="secondary">清空</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="backtest" class="card hidden">
+      <h2>歷史回測</h2>
+      <div id="backSummary"></div>
+      <div class="charts">
+        <div class="chart-block">
+          <h3>總資產曲線（回測）</h3>
+          <canvas id="backTotalChart" height="120"></canvas>
+        </div>
+        <div class="chart-block">
+          <h3>年度資產分布（回測）</h3>
+          <canvas id="backStackedChart" height="140"></canvas>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>年份</th>
+              <th>期初資產</th>
+              <th>年內投入</th>
+              <th>一次性資金</th>
+              <th>年度報酬</th>
+              <th>期末資產</th>
+            </tr>
+          </thead>
+          <tbody id="backYearlyRows"></tbody>
+        </table>
+      </div>
+      <h3>每年資產分布明細（回測，期末）</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr id="backAssetHeaderRow">
+              <th>年份</th>
+            </tr>
+          </thead>
+          <tbody id="backAssetBodyRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="result" class="card hidden">
+      <h2>結果</h2>
+      <div id="summary"></div>
+      <div class="charts">
+        <div class="chart-block">
+          <h3>總資產曲線</h3>
+          <canvas id="totalChart" height="120"></canvas>
+        </div>
+        <div class="chart-block">
+          <h3>年度資產分布（期末）</h3>
+          <canvas id="stackedChart" height="140"></canvas>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>年份</th>
+              <th>期初資產</th>
+              <th>年內投入</th>
+              <th>一次性資金</th>
+              <th>年度報酬</th>
+              <th>期末資產</th>
+            </tr>
+          </thead>
+          <tbody id="yearlyRows"></tbody>
+        </table>
+      </div>
+
+      <h3>每年資產分布明細（期末）</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr id="assetHeaderRow">
+              <th>年份</th>
+              <!-- 動態插入各資產標題 -->
+            </tr>
+          </thead>
+          <tbody id="assetBodyRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <p>此工具僅為教育用途，報酬率為假設，不構成投資建議。</p>
+    </footer>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

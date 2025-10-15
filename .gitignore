@@ -1,0 +1,35 @@
+# 依賴套件目錄
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# 環境變數
+.env
+.env.local
+.env.*.local
+
+# 作業系統檔案
+.DS_Store
+Thumbs.db
+
+# 編輯器
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 打包檔案
+*.zip
+*.tar
+*.tar.gz
+退休計畫試算器_打包版/
+
+# Log 檔案
+*.log
+
+# 暫存檔
+*.tmp
+*.temp
+
+# Vercel
+.vercel
