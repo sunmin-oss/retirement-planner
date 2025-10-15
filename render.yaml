@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: retirement-planner-api
+    runtime: node
+    region: singapore
+    plan: free
+    rootDir: retire-planner-server
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars: []
