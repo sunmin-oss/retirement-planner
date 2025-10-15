@@ -96,12 +96,12 @@
             <div class="row actions">
               <button type="button" id="fetchCagrBtn" class="secondary">依歷史近N年的CAGR自動帶入</button>
               <input id="fetchYears" type="number" min="1" max="30" value="10" style="max-width:120px" />
-              <small>會呼叫本機服務 http://localhost:5178/cagr</small>
+              <small>會呼叫後端服務的 /cagr 端點（下方可自訂 URL）</small>
             </div>
             <div class="row two-col">
               <div>
                 <label for="backendUrl">後端服務 URL</label>
-                <input id="backendUrl" type="text" value="http://localhost:5178" />
+                <input id="backendUrl" type="text" value="https://retirement-planner-api-a4c5.onrender.com" />
               </div>
               <div style="display:flex; align-items:flex-end; gap:8px;">
                 <button type="button" id="pingBackendBtn" class="secondary">測試連線</button>
