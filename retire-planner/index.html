@@ -65,8 +65,9 @@
         </div>
         <div class="row two-col">
           <div>
-            <label for="target">目標金額</label>
-            <input id="target" name="target" type="number" min="0" step="1000" placeholder="10000000" value="10000000" required />
+            <label for="target">目標金額(萬為單位)</label>
+            <input id="target" name="target" type="number" min="0" step="1" placeholder="1000" value="1000" required />
+            <small>請輸入「萬」為單位，例如 1000 代表 1,000 萬</small>
           </div>
           <div>
             <label for="monthly">每月投入金額</label>
