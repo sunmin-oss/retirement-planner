@@ -16,7 +16,8 @@
 
 ### 線上使用
 
-直接訪問：[https://your-domain.vercel.app](https://your-domain.vercel.app)
+正式網站：
+[https://retirement-planner-gamma.vercel.app](https://retirement-planner-gamma.vercel.app)
 
 ### 本機執行
 
