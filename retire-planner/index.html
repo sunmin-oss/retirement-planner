@@ -101,7 +101,8 @@
               <input id="fetchYears" type="number" min="1" max="30" value="10" style="max-width:120px" />
               <small>會呼叫後端服務的 /cagr 端點（下方可自訂 URL）</small>
             </div>
-            <div class="row two-col">
+            <!-- 隱藏後端服務URL與測試連線功能（僅開發者用）
+            <div class="row two-col" style="display:none;">
               <div>
                 <label for="backendUrl">後端服務 URL</label>
                 <input id="backendUrl" type="text" value="https://retirement-planner-api-a4c5.onrender.com" />
@@ -111,6 +112,7 @@
                 <small id="backendStatus">尚未檢測</small>
               </div>
             </div>
+            -->
             <div class="row two-col">
               <div>
                 <label for="baseYear">基準年份（用於回推顯示，預設為今年）</label>
